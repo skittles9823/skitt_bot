@@ -1,0 +1,6 @@
+python-telegram-bot>=10.1.0
+spongemock
+zalgo-text
+nltk
+aiohttp>=2.2.5
+Pillow>=4.2.0

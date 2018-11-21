@@ -1,0 +1,6 @@
+/skitt_bot/config.py
+*.pyc
+.idea/
+/skitt_bot/.vscode/*
+/.vscode/*
+bob.jpg
