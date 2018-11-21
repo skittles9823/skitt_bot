@@ -1,4 +1,5 @@
 import logging
+import os
 from os import path
 import telegram.ext
 
@@ -15,7 +16,7 @@ elif path.exists("skitt_bot/config.py"):
     from skitt_bot.config import Config
     TOKEN = Config.API_KEY
     DEEPFRY_TOKEN = Config.DEEPFRY_TOKEN
-    
+
 else:
     logger.error("config.py not found! Quitting.")
     exit(-1)
