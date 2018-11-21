@@ -1,7 +1,7 @@
 import telegram
 import importlib
 from skitt_bot.modules import ALL_MODULES
-from skitt_bot import updater, WEBHOOK, LISTEN, CERT_PATH, PORT, URL
+from skitt_bot import updater, TOKEN, WEBHOOK, LISTEN, CERT_PATH, PORT, URL, logger
 
 IMPORTED = {}
 
@@ -16,7 +16,7 @@ for module_name in ALL_MODULES:
         raise Exception("Can't have two modules with the same name! Please change one")
 
 if WEBHOOK:
-    LOGGER.info("Using webhooks.")
+    logger.info("Using webhooks.")
     updater.start_webhook(listen=LISTEN,
                           port=PORT,
                           url_path=TOKEN)
@@ -28,7 +28,7 @@ if WEBHOOK:
         updater.bot.set_webhook(url=URL + TOKEN)
 
 else:
-    LOGGER.info("Using long polling.")
+    logger.info("Using long polling.")
     updater.start_polling(timeout=15, read_latency=4)
 
 updater.idle()
