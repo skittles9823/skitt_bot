@@ -1,24 +1,30 @@
-import random, re, string, io, asyncio
-from PIL import Image
-from io import BytesIO
+import asyncio
 import base64
-from spongemock import spongemock
-from zalgo_text import zalgo
-from deeppyer import deepfry
-import os
-from pathlib import Path
 import glob
+import io
+import os
+import random
+import re
+import string
+import urllib.request
+from io import BytesIO
+from pathlib import Path
+from typing import List, Optional
 
 import nltk # shitty lib, but it does work
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 
-from typing import Optional, List
-from telegram import Message, Update, Bot, User
-from telegram import MessageEntity
-from skitt_bot import dispatcher, DEEPFRY_TOKEN
-from telegram.ext import run_async, CommandHandler, RegexHandler
+from PIL import Image
+from spongemock import spongemock
+from telegram import Bot, Message, MessageEntity, Update, User
+from telegram.ext import CommandHandler, RegexHandler, run_async
+from zalgo_text import zalgo
 
+from deeppyer import deepfry
+from skitt_bot import DEEPFRY_TOKEN, dispatcher
+
+MAXNUMURL = 'https://raw.githubusercontent.com/atanet90/expression-pack/master/meta'
 WIDE_MAP = dict((i, i + 0xFEE0) for i in range(0x21, 0x7F))
 WIDE_MAP[0x20] = 0x3000
 
@@ -171,6 +177,15 @@ def zalgotext(bot: Bot, update: Update):
     reply_text = zalgo.zalgo().zalgofy(data)
     message.reply_text(reply_text)
 
+@run_async
+def chinesememes(bot: Bot, update: Update):
+    message = update.effective_message
+    maxnum = urllib.request.urlopen(MAXNUMURL)
+    maxnum = maxnum.read().decode("utf8")
+    maxnum = random.randint(0, int(maxnum))
+    IMG = "https://raw.githubusercontent.com/atanet90/expression-pack/master/img/{}.jpg".format(maxnum)
+    bot.send_photo(chat_id=message.chat_id, photo=IMG, reply_to_message_id=message.message_id)
+
 # Less D A N K modules by @skittles9823 # holi fugg I did some maymays ^^^
 # shitty maymay modules made by @divadsn vvv
 
@@ -263,6 +278,7 @@ ZALGO_HANDLER = CommandHandler("zalgofy", zalgotext)
 FORBES_HANDLER = CommandHandler("forbes", forbesify)
 DEEPFRY_HANDLER = CommandHandler("deepfry", deepfryer)
 ME_TOO_THANKS_HANDLER = RegexHandler(r"(?i)me too", me_too)
+CHINESEMEMES_HANDLER = CommandHandler("dllm", chinesememes)
 
 dispatcher.add_handler(COPYPASTA_HANDLER)
 dispatcher.add_handler(CLAPMOJI_HANDLER)
@@ -275,3 +291,4 @@ dispatcher.add_handler(ZALGO_HANDLER)
 dispatcher.add_handler(FORBES_HANDLER)
 dispatcher.add_handler(DEEPFRY_HANDLER)
 dispatcher.add_handler(ME_TOO_THANKS_HANDLER)
+dispatcher.add_handler(CHINESEMEMES_HANDLER)
