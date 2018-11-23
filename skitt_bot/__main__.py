@@ -29,19 +29,44 @@ Well, here you go.
 Commands:
  <reply> = replying to a message
  <args> = adding a message after the command
- - /🅱 - <reply> - replying to a message with replace a random character with the B emoji.
- - /👏 - <reply> - adds clap emojis at the begining, end, and in every space in a message.
- - /😂 - <reply> - a replica of mattatas copypasta command.
- - /deepfry - <reply> - for when your images/stickers need to get a little fried.
- - /dllm - <optional args> - sends a random chinese meme. if you add a number after the command, itll reply with a specific photo.
- - /forbes - <reply> - turns a message into a Forbes headline.
- - me too - Saying "me too" will have a small chance for the bot to make a remark.
- - /mock - <reply> - mocks a replied message lick the spongebob meme.
- - /owo - <reply> - OwO whats this? OwOfies a message.
- - /stretch - <reply> - stretches vowels in a message a random number of times.
- - /thonkify - <reply>/<args> - turns text into thonk text (only supports letters and none symbols for now).
- - /vapor - <reply>/<args> - turns a message into vaporwave text.
- - /zalgofy - <reply> - corrupts a message.
+ - /🅱:
+    - <reply> 
+        - replying to a message with replace a random character with the B emoji.
+ - /👏:
+    - <reply> 
+        - adds clap emojis at the begining, end, and in every space in a message.
+ - /😂:
+    - <reply> 
+        - a replica of mattatas copypasta command.
+ - /deepfry:
+    - <reply> 
+        - for when your images/stickers need to get a little fried.
+ - /dllm:
+    - <optional args> 
+        - sends a random chinese meme. if you add a number after the command, itll reply with a specific photo.
+ - /forbes:
+    - <reply> 
+        - turns a message into a Forbes headline.
+ - me too:
+    - Saying "me too" will have a small chance for the bot to make a remark.
+ - /mock:
+    - <reply> 
+        - mocks a replied message lick the spongebob meme.
+ - /owo:
+    - <reply> 
+        - OwO whats this? OwOfies a message.
+ - /stretch:
+    - <reply> 
+        - stretches vowels in a message a random number of times.
+ - /thonkify:
+    - <reply>/<args> 
+        - turns text into thonk text (only supports letters and none symbols for now).
+ - /vapor:
+    - <reply>/<args> 
+        - turns a message into vaporwave text.
+ - /zalgofy:
+    - <reply> 
+        - corrupts a message.
 """
 
 @run_async
