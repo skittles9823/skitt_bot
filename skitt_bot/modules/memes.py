@@ -19,6 +19,7 @@ from PIL import Image
 from spongemock import spongemock
 from telegram import Bot, Message, MessageEntity, Update, User
 from telegram.ext import CommandHandler, RegexHandler, run_async
+from telegram.error import BadRequest
 from zalgo_text import zalgo
 
 from deeppyer import deepfry
@@ -178,13 +179,22 @@ def zalgotext(bot: Bot, update: Update):
     message.reply_text(reply_text)
 
 @run_async
-def chinesememes(bot: Bot, update: Update):
+def chinesememes(bot: Bot, update: Update, args: List[str]):
     message = update.effective_message
     maxnum = urllib.request.urlopen(MAXNUMURL)
     maxnum = maxnum.read().decode("utf8")
-    maxnum = random.randint(0, int(maxnum))
-    IMG = "https://raw.githubusercontent.com/atanet90/expression-pack/master/img/{}.jpg".format(maxnum)
-    bot.send_photo(chat_id=message.chat_id, photo=IMG, reply_to_message_id=message.message_id)
+    if args:
+        num = message.text.split(None, 1)[1]
+    else:
+        num = random.randint(0, int(maxnum))
+    try:
+        IMG = "https://raw.githubusercontent.com/atanet90/expression-pack/master/img/{}.jpg".format(num)
+        maxnum = int(maxnum)
+        maxnum -= 1
+        bot.send_photo(chat_id=message.chat_id, photo=IMG, caption='Image: {} - (0-{})'.format(num, maxnum), 
+                        reply_to_message_id=message.message_id)
+    except BadRequest as e:
+        message.reply_text("Image not found!")
 
 # Less D A N K modules by @skittles9823 # holi fugg I did some maymays ^^^
 # shitty maymay modules made by @divadsn vvv
@@ -278,7 +288,7 @@ ZALGO_HANDLER = CommandHandler("zalgofy", zalgotext)
 FORBES_HANDLER = CommandHandler("forbes", forbesify)
 DEEPFRY_HANDLER = CommandHandler("deepfry", deepfryer)
 ME_TOO_THANKS_HANDLER = RegexHandler(r"(?i)me too", me_too)
-CHINESEMEMES_HANDLER = CommandHandler("dllm", chinesememes)
+CHINESEMEMES_HANDLER = CommandHandler("dllm", chinesememes,  pass_args=True)
 
 dispatcher.add_handler(COPYPASTA_HANDLER)
 dispatcher.add_handler(CLAPMOJI_HANDLER)
