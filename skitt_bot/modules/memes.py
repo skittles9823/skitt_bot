@@ -195,6 +195,7 @@ def chinesememes(bot: Bot, update: Update, args: List[str]):
                         reply_to_message_id=message.message_id)
     except BadRequest as e:
         message.reply_text("Image not found!")
+        print(e)
 
 # Less D A N K modules by @skittles9823 # holi fugg I did some maymays ^^^
 # shitty maymay modules made by @divadsn vvv
