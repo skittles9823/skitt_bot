@@ -162,5 +162,5 @@ def makepack_internal(msg, user, png_sticker, emoji, bot):
 
 
 __mod_name__ = "Stickers"
-KANG_HANDLER = DisableAbleCommandHandler("kang", kang, pass_args=True)
+KANG_HANDLER = CommandHandler("kang", kang, pass_args=True)
 dispatcher.add_handler(KANG_HANDLER)
