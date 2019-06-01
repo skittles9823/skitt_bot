@@ -20,7 +20,8 @@ from skitt_bot import dispatcher
 def kang(bot: Bot, update: Update, args: List[str]):
     msg = update.effective_message
     user = update.effective_user
-    packname = "a" + str(user.id) + "_by_"+bot.username
+    packnum = 0
+    packname = "a" + str(user.id) + "_"+packnum + "_by_"+bot.username
     kangsticker = "kangsticker.png"
     if msg.reply_to_message:
         if msg.reply_to_message.sticker:
@@ -79,7 +80,13 @@ def kang(bot: Bot, update: Update, args: List[str]):
             elif e.message == "Invalid sticker emojis":
                 msg.reply_text("Invalid emoji(s).")
             elif e.message == "Stickers_too_much":
-                msg.reply_text("Max packsize reached. Press F to pay respecc.")
+                while True
+                    try:
+                        packnum += 1
+                        makepack_internal(msg, user, open('kangsticker.png', 'rb'), sticker_emoji, bot)
+                        break
+                    except TelegramError as f:
+                        pass
             print(e)
     elif args:
         try:
@@ -136,7 +143,7 @@ def kang(bot: Bot, update: Update, args: List[str]):
 def makepack_internal(msg, user, png_sticker, emoji, bot):
     name = user.first_name
     name = name[:50]
-    packname = f"a{str(user.id)}_by_{bot.username}"
+    packname = f"a{str(user.id)}_{packnum}_by_{bot.username}"
     try:
         success = bot.create_new_sticker_set(user.id, packname, name + "'s kang pack",
                                              png_sticker=png_sticker,
