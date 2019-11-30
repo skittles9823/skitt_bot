@@ -266,9 +266,9 @@ async def process_deepfry(image: Image, reply: Message, bot: Bot):
 # shitty maymay modules made by @divadsn ^^^
 
 
-COPYPASTA_HANDLER = CommandHandler("😂", copypasta)
-CLAPMOJI_HANDLER = CommandHandler("👏", clapmoji)
-BMOJI_HANDLER = CommandHandler("🅱", bmoji)
+COPYPASTA_HANDLER = CommandHandler("cp", copypasta)
+CLAPMOJI_HANDLER = CommandHandler("clap", clapmoji)
+BMOJI_HANDLER = CommandHandler("bify", bmoji)
 OWO_HANDLER = CommandHandler("owo", owo)
 STRETCH_HANDLER = CommandHandler("stretch", stretch)
 VAPOR_HANDLER = CommandHandler("vapor", vapor, pass_args=True)

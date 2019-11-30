@@ -30,11 +30,11 @@ Well, here you go.
 *Commands:*
  _<reply> = replying to a message_
  _<args> = adding a message after the command_
- - `/🅱`: - _<reply>_ 
+ - `/bify`: - _<reply>_ 
     *- replying to a message with replace a random character with the B emoji.*
- - `/👏`: - _<reply>_ 
+ - `/clap`: - _<reply>_ 
     *- adds clap emojis at the begining, end, and in every space in a message.*
- - `/😂`: - _<reply>_ 
+ - `/cp`: - _<reply>_ 
     *- a replica of mattatas copypasta command.*
  - `/deepfry`: - _<reply>_ 
     *- for when your images/stickers need to get a little fried.*
