@@ -1,21 +1,25 @@
-import telegram
 import importlib
+
+from telegram import ParseMode, Update
+from telegram.ext import CallbackContext, CommandHandler
+
+from skitt_bot import (CERT_PATH, LISTEN, PORT, TOKEN, URL, WEBHOOK,
+                       dispatcher, logger, updater)
 from skitt_bot.modules import ALL_MODULES
-from skitt_bot import dispatcher, logger, updater, TOKEN, WEBHOOK, LISTEN, CERT_PATH, PORT, URL, logger
-from telegram import Update, Bot, ParseMode
-from telegram.ext import CommandHandler, run_async
 
 IMPORTED = {}
 
 for module_name in ALL_MODULES:
-    imported_module = importlib.import_module("skitt_bot.modules." + module_name)
+    imported_module = importlib.import_module(
+        "skitt_bot.modules." + module_name)
     if not hasattr(imported_module, "__mod_name__"):
         imported_module.__mod_name__ = imported_module.__name__
 
     if not imported_module.__mod_name__.lower() in IMPORTED:
         IMPORTED[imported_module.__mod_name__.lower()] = imported_module
     else:
-        raise Exception("Can't have two modules with the same name! Please change one")
+        raise Exception(
+            "Can't have two modules with the same name! Please change one")
 
 START_TEXT = """
 Hey fam! I'm {}, and I'm here to bring some funny maymays into your life!
@@ -58,23 +62,27 @@ Well, here you go.
     *- corrupts a message.*
 """
 
-@run_async
-def start(bot: Bot, update: Update):
+
+def start(update: Update, context: CallbackContext):
     if update.effective_chat.type == "private":
-        update.effective_message.reply_text(START_TEXT, parse_mode=ParseMode.MARKDOWN)
+        update.effective_message.reply_text(
+            START_TEXT, parse_mode=ParseMode.MARKDOWN)
     else:
         update.effective_message.reply_text("Waow sur, you've UwU-ken me :3")
 
-@run_async
-def help(bot: Bot, update: Update):
+
+def help(update: Update, context: CallbackContext):
     if update.effective_chat.type == "private":
-        update.effective_message.reply_text(HELP_TEXT, parse_mode=ParseMode.MARKDOWN)
+        update.effective_message.reply_text(
+            HELP_TEXT, parse_mode=ParseMode.MARKDOWN)
     else:
-        update.effective_message.reply_text("Try this command again in a private message.")
+        update.effective_message.reply_text(
+            "Try this command again in a private message.")
+
 
 def main():
-    START_HANDLER = CommandHandler("start", start)
-    HELP_HANDLER = CommandHandler("help", help)
+    START_HANDLER = CommandHandler("start", start, run_async=True)
+    HELP_HANDLER = CommandHandler("help", help, run_async=True)
 
     dispatcher.add_handler(START_HANDLER)
     dispatcher.add_handler(HELP_HANDLER)
@@ -96,6 +104,7 @@ def main():
         updater.start_polling(timeout=15, read_latency=4)
 
     updater.idle()
+
 
 if __name__ == '__main__':
     logger.info("Successfully loaded modules: " + str(ALL_MODULES))

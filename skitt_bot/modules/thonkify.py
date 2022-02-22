@@ -2,14 +2,14 @@
 
 import base64
 from io import BytesIO
+
 from PIL import Image
-from telegram import Message, Update, Bot, User
-from telegram.ext import run_async, CommandHandler
 from skitt_bot import dispatcher
+from telegram import Update
+from telegram.ext import CallbackContext, CommandHandler
 
 
-@run_async
-def thonkify(bot: Bot, update: Update):
+def thonkify(update: Update, context: CallbackContext):
     from skitt_bot.modules.thonkify_dict import thonkifydict
 
     message = update.effective_message
@@ -23,7 +23,9 @@ def thonkify(bot: Bot, update: Update):
         message.reply_text("thonk yourself")
         return
 
-    tracking = Image.open(BytesIO(base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAYAAAOACAYAAAAZzQIQAAAALElEQVR4nO3BAQ0AAADCoPdPbQ8HFAAAAAAAAAAAAAAAAAAAAAAAAAAAAPwZV4AAAfA8WFIAAAAASUVORK5CYII='))) # base64 encoded empty image(but longer)
+    # base64 encoded empty image(but longer)
+    tracking = Image.open(BytesIO(base64.b64decode(
+        'iVBORw0KGgoAAAANSUhEUgAAAAYAAAOACAYAAAAZzQIQAAAALElEQVR4nO3BAQ0AAADCoPdPbQ8HFAAAAAAAAAAAAAAAAAAAAAAAAAAAAPwZV4AAAfA8WFIAAAAASUVORK5CYII=')))
 
     # remove characters thonkify can't parse
     for character in msg:
@@ -36,7 +38,8 @@ def thonkify(bot: Bot, update: Update):
     image = Image.new('RGBA', [x, y], (0, 0, 0))
     for character in msg:
         value = thonkifydict.get(character)
-        addedimg = Image.new('RGBA', [x + value.size[0] + tracking.size[0], y], (0, 0, 0))
+        addedimg = Image.new(
+            'RGBA', [x + value.size[0] + tracking.size[0], y], (0, 0, 0))
         addedimg.paste(image, [0, 0])
         addedimg.paste(tracking, [x, 0])
         addedimg.paste(value, [x + tracking.size[0], 0])
@@ -49,12 +52,14 @@ def thonkify(bot: Bot, update: Update):
 
     # put processed image in a buffer and then upload cause async
     with BytesIO() as buffer:
-        buffer.name = 'image.png'
-        image.save(buffer, 'PNG')
-        buffer.seek(0)
-        bot.send_sticker(chat_id=message.chat_id, sticker=buffer)
+        try:
+            buffer.name = 'image.png'
+            image.save(buffer, 'PNG')
+            buffer.seek(0)
+            context.bot.send_sticker(chat_id=message.chat_id, sticker=buffer)
+        except SystemError:
+            message.reply_text("PIL committed sudoku.")
 
 
-THONKIFY_HANDLER = CommandHandler("thonkify", thonkify)
+THONKIFY_HANDLER = CommandHandler("thonkify", thonkify, run_async=True)
 dispatcher.add_handler(THONKIFY_HANDLER)
-

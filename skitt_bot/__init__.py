@@ -1,9 +1,11 @@
 import logging
 import os
 from os import path
+
 import telegram.ext
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+logging.basicConfig(level=logging.INFO,
+                    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger()
 
 ENV = bool(os.environ.get('ENV', False))

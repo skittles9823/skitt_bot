@@ -7,21 +7,21 @@ import string
 import urllib.request
 from io import BytesIO
 from pathlib import Path
-from typing import List, Optional
 
-import nltk # shitty lib, but it does work
+import nltk  # shitty lib, but it does work
+from deeppyer import deepfry
+from PIL import Image
+from skitt_bot import DEEPFRY_TOKEN, dispatcher
+from spongemock import spongemock
+from telegram import Message, Update
+from telegram.error import BadRequest
+from telegram.ext import (CallbackContext, CommandHandler, Filters,
+                          MessageHandler)
+from zalgo_text import zalgo
+
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 
-from PIL import Image
-from spongemock import spongemock
-from telegram import Bot, Message, MessageEntity, Update, User
-from telegram.ext import CommandHandler, RegexHandler, run_async
-from telegram.error import BadRequest
-from zalgo_text import zalgo
-
-from deeppyer import deepfry
-from skitt_bot import DEEPFRY_TOKEN, dispatcher
 
 MAXNUMURL = 'https://raw.githubusercontent.com/atanet90/expression-pack/master/meta'
 WIDE_MAP = dict((i, i + 0xFEE0) for i in range(0x21, 0x7F))
@@ -30,15 +30,18 @@ WIDE_MAP[0x20] = 0x3000
 # D A N K modules by @deletescape vvv
 
 # based on https://github.com/wrxck/mattata/blob/master/plugins/copypasta.mattata
-@run_async
-def copypasta(bot: Bot, update: Update):
+
+
+def copypasta(update: Update, context: CallbackContext):
     message = update.effective_message
     if not message.reply_to_message:
         message.reply_text("I need a message to meme.")
     else:
-        emojis = ["😂", "😂", "👌", "✌", "💞", "👍", "👌", "💯", "🎶", "👀", "😂", "👓", "👏", "👐", "🍕", "💥", "🍴", "💦", "💦", "🍑", "🍆", "😩", "😏", "👉👌", "👀", "👅", "😩", "🚰"]
+        emojis = ["😂", "😂", "👌", "✌", "💞", "👍", "👌", "💯", "🎶", "👀", "😂", "👓", "👏",
+                  "👐", "🍕", "💥", "🍴", "💦", "💦", "🍑", "🍆", "😩", "😏", "👉👌", "👀", "👅", "😩", "🚰"]
         reply_text = random.choice(emojis)
-        b_char = random.choice(message.reply_to_message.text).lower() # choose a random character in the message to be substituted with 🅱️
+        # choose a random character in the message to be substituted with 🅱️
+        b_char = random.choice(message.reply_to_message.text).lower()
         for c in message.reply_to_message.text:
             if c == " ":
                 reply_text += random.choice(emojis)
@@ -56,19 +59,19 @@ def copypasta(bot: Bot, update: Update):
         message.reply_to_message.reply_text(reply_text)
 
 
-@run_async
-def bmoji(bot: Bot, update: Update):
+def bmoji(update: Update, context: CallbackContext):
     message = update.effective_message
     if not message.reply_to_message:
         message.reply_text("I need a message to meme.")
     else:
-        b_char = random.choice(message.reply_to_message.text).lower() # choose a random character in the message to be substituted with 🅱️
-        reply_text = message.reply_to_message.text.replace(b_char, "🅱️").replace(b_char.upper(), "🅱️")
+        # choose a random character in the message to be substituted with 🅱️
+        b_char = random.choice(message.reply_to_message.text).lower()
+        reply_text = message.reply_to_message.text.replace(
+            b_char, "🅱️").replace(b_char.upper(), "🅱️")
         message.reply_to_message.reply_text(reply_text)
 
 
-@run_async
-def clapmoji(bot: Bot, update: Update):
+def clapmoji(update: Update, context: CallbackContext):
     message = update.effective_message
     if not message.reply_to_message:
         message.reply_text("I need a message to meme.")
@@ -79,13 +82,13 @@ def clapmoji(bot: Bot, update: Update):
         message.reply_to_message.reply_text(reply_text)
 
 
-@run_async
-def owo(bot: Bot, update: Update):
+def owo(update: Update, context: CallbackContext):
     message = update.effective_message
     if not message.reply_to_message:
         message.reply_text("I need a message to meme.")
     else:
-        faces = ['(・`ω´・)',';;w;;','owo','UwU','>w<','^w^','\(^o\) (/o^)/','( ^ _ ^)∠☆','(ô_ô)','~:o',';____;', '(*^*)', '(>_', '(♥_♥)', '*(^O^)*', '((+_+))']
+        faces = ['(・`ω´・)', ';;w;;', 'owo', 'UwU', '>w<', '^w^', '\(^o\) (/o^)/', '( ^ _ ^)∠☆',
+                 '(ô_ô)', '~:o', ';____;', '(*^*)', '(>_', '(♥_♥)', '*(^O^)*', '((+_+))']
         reply_text = re.sub(r'[rl]', "w", message.reply_to_message.text)
         reply_text = re.sub(r'[ｒｌ]', "ｗ", message.reply_to_message.text)
         reply_text = re.sub(r'[RL]', 'W', reply_text)
@@ -102,23 +105,24 @@ def owo(bot: Bot, update: Update):
         message.reply_to_message.reply_text(reply_text)
 
 
-@run_async
-def stretch(bot: Bot, update: Update):
+def stretch(update: Update, context: CallbackContext):
     message = update.effective_message
     if not message.reply_to_message:
         message.reply_text("I need a message to meme.")
     else:
         count = random.randint(3, 10)
-        reply_text = re.sub(r'([aeiouAEIOUａｅｉｏｕＡＥＩＯＵ])', (r'\1' * count), message.reply_to_message.text)
+        reply_text = re.sub(r'([aeiouAEIOUａｅｉｏｕＡＥＩＯＵ])',
+                            (r'\1' * count), message.reply_to_message.text)
         message.reply_to_message.reply_text(reply_text)
 
 
-@run_async
-def vapor(bot: Bot, update: Update, args: List[str]):
+def vapor(update: Update, context: CallbackContext):
     message = update.effective_message
+    args = context.args
     if not message.reply_to_message:
         if not args:
-            message.reply_text("I need a message to convert to vaporwave text.")
+            message.reply_text(
+                "I need a message to convert to vaporwave text.")
         else:
             noreply = True
             data = message.text.split(None, 1)[1]
@@ -134,18 +138,19 @@ def vapor(bot: Bot, update: Update, args: List[str]):
     else:
         message.reply_to_message.reply_text(reply_text)
 
-@run_async
-def me_too(bot: Bot, update: Update):
+
+def me_too(update: Update, context: CallbackContext):
     message = update.effective_message
     if random.randint(0, 100) > 60:
-        reply = random.choice(["Me too thanks", "Haha yes, me too", "Same lol", "Me irl"])
+        reply = random.choice(
+            ["Me too thanks", "Haha yes, me too", "Same lol", "Me irl"])
         message.reply_text(reply)
 
 # D A N K modules by @deletescape ^^^
 # Less D A N K modules by @skittles9823 # holi fugg I did some maymays vvv
 
-@run_async
-def spongemocktext(bot: Bot, update: Update):
+
+def spongemocktext(update: Update, context: CallbackContext):
     message = update.effective_message
     if message.reply_to_message:
         data = message.reply_to_message.text
@@ -155,8 +160,8 @@ def spongemocktext(bot: Bot, update: Update):
     reply_text = spongemock.mock(data)
     message.reply_text(reply_text)
 
-@run_async
-def zalgotext(bot: Bot, update: Update):
+
+def zalgotext(update: Update, context: CallbackContext):
     message = update.effective_message
     if message.reply_to_message:
         data = message.reply_to_message.text
@@ -166,8 +171,9 @@ def zalgotext(bot: Bot, update: Update):
     reply_text = zalgo.zalgo().zalgofy(data)
     message.reply_text(reply_text)
 
-@run_async
-def chinesememes(bot: Bot, update: Update, args: List[str]):
+
+def chinesememes(update: Update, context: CallbackContext):
+    args = context.args
     message = update.effective_message
     maxnum = urllib.request.urlopen(MAXNUMURL)
     maxnum = maxnum.read().decode("utf8")
@@ -176,20 +182,21 @@ def chinesememes(bot: Bot, update: Update, args: List[str]):
     else:
         num = random.randint(0, int(maxnum))
     try:
-        IMG = "https://raw.githubusercontent.com/atanet90/expression-pack/master/img/{}.jpg".format(num)
+        IMG = "https://raw.githubusercontent.com/atanet90/expression-pack/master/img/{}.jpg".format(
+            num)
         maxnum = int(maxnum)
         maxnum -= 1
-        bot.send_photo(chat_id=message.chat_id, photo=IMG, caption='Image: {} - (0-{})'.format(num, maxnum), 
-                        reply_to_message_id=message.message_id)
+        context.bot.send_photo(chat_id=message.chat_id, photo=IMG, caption='Image: {} - (0-{})'.format(num, maxnum),
+                               reply_to_message_id=message.message_id)
     except BadRequest as e:
         message.reply_text("Image not found!")
         print(e)
 
 # Less D A N K modules by @skittles9823 # holi fugg I did some maymays ^^^
+
 # shitty maymay modules made by @divadsn vvv
 
-@run_async
-def forbesify(bot: Bot, update: Update):
+def forbesify(update: Update, context: CallbackContext):
     message = update.effective_message
     if message.reply_to_message:
         data = message.reply_to_message.text
@@ -216,8 +223,7 @@ def forbesify(bot: Bot, update: Update):
     message.reply_to_message.reply_text(reply_text)
 
 
-@run_async
-def deepfryer(bot: Bot, update: Update):
+def deepfryer(update: Update, context: CallbackContext):
     message = update.effective_message
     if message.reply_to_message:
         data = message.reply_to_message.photo
@@ -236,16 +242,17 @@ def deepfryer(bot: Bot, update: Update):
         photodata = data[len(data) - 1].get_file().download_as_bytearray()
         image = Image.open(io.BytesIO(photodata))
     elif data2:
-        sticker = bot.get_file(data2.file_id)
+        sticker = context.bot.get_file(data2.file_id)
         sticker.download('sticker.png')
         image = Image.open("sticker.png")
 
     # the following needs to be executed async (because dumb lib)
     loop = asyncio.new_event_loop()
-    loop.run_until_complete(process_deepfry(image, message.reply_to_message, bot))
+    loop.run_until_complete(process_deepfry(image, message.reply_to_message))
     loop.close()
 
-async def process_deepfry(image: Image, reply: Message, bot: Bot):
+
+async def process_deepfry(image: Image, reply: Message):
     # DEEPFRY IT
     image = await deepfry(
         img=image,
@@ -266,18 +273,20 @@ async def process_deepfry(image: Image, reply: Message, bot: Bot):
 # shitty maymay modules made by @divadsn ^^^
 
 
-COPYPASTA_HANDLER = CommandHandler("cp", copypasta)
-CLAPMOJI_HANDLER = CommandHandler("clap", clapmoji)
-BMOJI_HANDLER = CommandHandler("bify", bmoji)
-OWO_HANDLER = CommandHandler("owo", owo)
-STRETCH_HANDLER = CommandHandler("stretch", stretch)
-VAPOR_HANDLER = CommandHandler("vapor", vapor, pass_args=True)
-MOCK_HANDLER = CommandHandler("mock", spongemocktext)
-ZALGO_HANDLER = CommandHandler("zalgofy", zalgotext)
-FORBES_HANDLER = CommandHandler("forbes", forbesify)
-DEEPFRY_HANDLER = CommandHandler("deepfry", deepfryer)
-ME_TOO_THANKS_HANDLER = RegexHandler(r"(?i)me too", me_too)
-CHINESEMEMES_HANDLER = CommandHandler("dllm", chinesememes,  pass_args=True)
+COPYPASTA_HANDLER = CommandHandler("cp", copypasta, run_async=True)
+CLAPMOJI_HANDLER = CommandHandler("clap", clapmoji, run_async=True)
+BMOJI_HANDLER = CommandHandler("bify", bmoji, run_async=True)
+OWO_HANDLER = CommandHandler("owo", owo, run_async=True)
+STRETCH_HANDLER = CommandHandler("stretch", stretch, run_async=True)
+VAPOR_HANDLER = CommandHandler("vapor", vapor, pass_args=True, run_async=True)
+MOCK_HANDLER = CommandHandler("mock", spongemocktext, run_async=True)
+ZALGO_HANDLER = CommandHandler("zalgofy", zalgotext, run_async=True)
+FORBES_HANDLER = CommandHandler("forbes", forbesify, run_async=True)
+DEEPFRY_HANDLER = CommandHandler("deepfry", deepfryer, run_async=True)
+ME_TOO_THANKS_HANDLER = MessageHandler(
+    Filters.regex('(?i)me too'), me_too, run_async=True)
+CHINESEMEMES_HANDLER = CommandHandler(
+    "dllm", chinesememes,  pass_args=True, run_async=True)
 
 dispatcher.add_handler(COPYPASTA_HANDLER)
 dispatcher.add_handler(CLAPMOJI_HANDLER)
